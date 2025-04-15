@@ -445,7 +445,6 @@ def cv_fold_effect_fast(
 # (g) compare alternative regressors (OOS R²)
 # ────────────────────────────────────────────────────────────────────────────────
 
-
 def fast_compare_regressors_oos_r2(df, alpha=1.0, gamma=0.1, n_components=5):
     y = df["CRSP_SPvw_minus_Rfree"].values
     X = df.drop(columns=["CRSP_SPvw_minus_Rfree", "yyyymm"], errors="ignore").values
@@ -456,8 +455,8 @@ def fast_compare_regressors_oos_r2(df, alpha=1.0, gamma=0.1, n_components=5):
         "Kernel Ridge (RBF)": make_pipeline(StandardScaler(), KernelRidge(kernel="rbf", alpha=alpha, gamma=gamma)),
         "PCA + Ridge": make_pipeline(StandardScaler(), PCA(n_components=n_components), Ridge(alpha=alpha)),
         "PLS Regression": make_pipeline(StandardScaler(), PLSRegression(n_components=n_components)),
-        "Gradient Boosting": make_pipeline(StandardScaler(), GradientBoostingRegressor(
-            n_estimators=100, learning_rate=0.1, max_depth=3))
+        "Gradient Boosting": GradientBoostingRegressor(
+            n_estimators=100, learning_rate=0.1, max_depth=3)
     }
 
     results = {}
@@ -475,3 +474,4 @@ def fast_compare_regressors_oos_r2(df, alpha=1.0, gamma=0.1, n_components=5):
         results[name] = np.mean(r2_scores)
 
     return pd.DataFrame.from_dict(results, orient='index', columns=["OOS R^2"]).sort_values(by="OOS R^2", ascending=False)
+
